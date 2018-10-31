@@ -15,20 +15,22 @@ import javax.xml.bind.Unmarshaller;
 class NdfdXMLBindingStubTest {
     @Test
     void latLonListZipCode() throws Exception {
-        NdfdXMLBindingStub binding = (NdfdXMLBindingStub) new NdfdXMLLocator().getndfdXMLPort();
-        String result = binding.latLonListZipCode("53711");
+        try {
+            // create JAXB context and initializing Marshaller
+            JAXBContext jaxbContext = JAXBContext.newInstance(DwmlType.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-        // create JAXB context and initializing Marshaller
-        JAXBContext jaxbContext = JAXBContext.newInstance(DwmlType.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            NdfdXMLBindingStub binding = (NdfdXMLBindingStub) new NdfdXMLLocator().getndfdXMLPort();
+            String result = binding.latLonListZipCode("53711");
 
-        // specify the location and name of xml file to be read
-        File XMLfile = new File('C:\\arpit\\CountryRecord.xml');
 
-        // this will create Java object - country from the XML file
-        Country countryIndia = (Country) jaxbUnmarshaller.unmarshal(XMLfile);
+            DwmlType dwml = (DwmlType) jaxbUnmarshaller.unmarshal(new StringReader(result));
 
-        assertEquals("???", result);
+            assertEquals("43.0798,-89.3875", dwml.getLatLonList());
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
